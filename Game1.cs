@@ -10,13 +10,17 @@ namespace final_project_rough_draft__Stardew_
         private SpriteBatch _spriteBatch;
 
 
-        Texture2D livingRoomTexture, bedRoomTexture, pianoRoomTexture, pixelboyTexture;
+        Texture2D livingRoomTexture, bedRoomTexture, pianoRoomTexture, ghostrightTexture;
 
 
-        Rectangle window, livingRoomDoor, bedRoomDoor, pianoRoomDoor, pixelboyRect;
+        Rectangle window, livingRoomDoor, bedRoomDoor, pianoRoomDoor, ghostrightRect, ghostrectLivingRoom, ghostrectPianoRoom, ghostrectBedRoom, ghostLocation;
         MouseState mouseState;
         Vector2 cursorPosition;
-       
+        SpriteEffects ghostEffect;
+
+        Vector2 ghostSpeed;
+        KeyboardState keyboardState;
+
 
         enum Screen
         {
@@ -39,12 +43,17 @@ namespace final_project_rough_draft__Stardew_
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            ghostEffect = SpriteEffects.FlipHorizontally;
             window = new Rectangle(0, 0, 800, 600);
             livingRoomDoor = new Rectangle(216, 542, 253, 264);
             bedRoomDoor = new Rectangle(397, 536, 1065, 909);
             pianoRoomDoor = new Rectangle(764, 319, 461, 440);
-            pixelboyRect = new Rectangle(800, 600, 10, 10);
+            
+            ghostrectLivingRoom = new Rectangle(190,488, 70,70);
+            ghostrectPianoRoom = new Rectangle(700,280, 70, 70);
+            ghostrectBedRoom = new Rectangle(380, 476, 70, 70);
+            ghostLocation = new Rectangle(190, 488, 70, 70);
+
 
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
@@ -63,7 +72,8 @@ namespace final_project_rough_draft__Stardew_
             livingRoomTexture = Content.Load<Texture2D>("livingRoom2");
             bedRoomTexture = Content.Load<Texture2D>("bedRoom2");
             pianoRoomTexture = Content.Load<Texture2D>("pianoRoom2");
-            pixelboyTexture = Content.Load<Texture2D>("pixelboy");
+            ghostrightTexture = Content.Load<Texture2D>("ghostRight");
+            
 
 
             // TODO: use this.Content to load your game content here
@@ -75,12 +85,24 @@ namespace final_project_rough_draft__Stardew_
                 Exit();
 
             this.Window.Title = mouseState.Position.ToString();
-            mouseState = Mouse.GetState();
+            
             cursorPosition = new Vector2(mouseState.X, mouseState.Y);
+            keyboardState = Keyboard.GetState();
+            mouseState = Mouse.GetState();
+            ghostSpeed = new Vector2();
+
+
+
+
+
+
+
+
+
             if (screen == Screen.livingRoom)
             {
 
-                if  (mouseState.RightButton == ButtonState.Pressed && livingRoomDoor.Contains(mouseState.Position))
+                if   (livingRoomDoor.Contains(ghostrectLivingRoom))
                 {
                     screen = Screen.bedRoom;
 
@@ -89,6 +111,7 @@ namespace final_project_rough_draft__Stardew_
                 if (mouseState.LeftButton == ButtonState.Pressed && livingRoomDoor.Contains(mouseState.Position))
                 {
                     screen = Screen.pianoRoom;
+                    
 
 
                 }
@@ -99,6 +122,8 @@ namespace final_project_rough_draft__Stardew_
 
             else if (screen == Screen.pianoRoom)
             {
+
+                
                 if (mouseState.RightButton == ButtonState.Pressed && pianoRoomDoor.Contains(mouseState.Position))
                 {
                     screen = Screen.bedRoom;
@@ -145,19 +170,25 @@ namespace final_project_rough_draft__Stardew_
             
             if (screen == Screen.livingRoom)
             {
+                
                 _spriteBatch.Draw(livingRoomTexture, window, Color.White);
-                _spriteBatch.Draw (pixelboyTexture, livingRoomDoor, Color.White);
+                _spriteBatch.Draw (ghostrightTexture,ghostrectLivingRoom, Color.White); 
+                
             }
 
             else if (screen == Screen.bedRoom)
             {
                 _spriteBatch.Draw(bedRoomTexture, window, Color.White);
-                _spriteBatch.Draw(pixelboyTexture, bedRoomDoor, Color.White);
+                _spriteBatch.Draw(ghostrightTexture, ghostrectBedRoom, Color.White);
+
             }
             else if (screen == Screen.pianoRoom)
             {
+
+
                 _spriteBatch.Draw(pianoRoomTexture, window, Color.White);
-                _spriteBatch.Draw(pixelboyTexture, pianoRoomDoor, Color.White);
+                _spriteBatch.Draw(ghostrightTexture, ghostrectPianoRoom, Color.White);
+
             }
 
 
