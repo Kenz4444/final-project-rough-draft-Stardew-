@@ -11,7 +11,7 @@ namespace final_project_rough_draft__Stardew_
         private SpriteBatch _spriteBatch;
 
 
-        Texture2D livingRoomTexture, bedRoomTexture, pianoRoomTexture, ghostRightTexture;
+        Texture2D livingRoomTexture, bedRoomTexture, pianoRoomTexture, ghostRightTexture, ghostLeftTexture, ghostTexture;
 
 
         Rectangle window, livingRoomDoor, bedRoomDoor, pianoRoomDoor, ghostLocation;
@@ -51,9 +51,9 @@ namespace final_project_rough_draft__Stardew_
             window = new Rectangle(0, 0, 800, 600);
             ghostSpeed = Vector2.Zero;
 
-            livingRoomDoor = new Rectangle(216, 542, 253, 264);
-            bedRoomDoor = new Rectangle(397, 536, 1065, 909);
-            pianoRoomDoor = new Rectangle(764, 319, 461, 440);
+            livingRoomDoor = new Rectangle(180, 530, 253, 264);
+            bedRoomDoor = new Rectangle(370, 545, 1065, 909);
+            pianoRoomDoor = new Rectangle(740, 245, 461, 440);
             
             
             ghostLocation = new Rectangle(180, 450, 70, 70);
@@ -90,7 +90,8 @@ namespace final_project_rough_draft__Stardew_
             bedRoomTexture = Content.Load<Texture2D>("bedRoom2");
             pianoRoomTexture = Content.Load<Texture2D>("pianoRoom2");
             ghostRightTexture = Content.Load<Texture2D>("ghostRight");
-            
+            ghostLeftTexture = Content.Load<Texture2D>("ghostLeft");
+            ghostTexture = Content.Load<Texture2D>("ghostRight");
 
 
             // TODO: use this.Content to load your game content here
@@ -127,14 +128,16 @@ namespace final_project_rough_draft__Stardew_
             if (keyboardState.IsKeyDown(Keys.Right))
             {
                 ghostSpeed.X += 2;
-                
+                ghostTexture = ghostRightTexture;
+
 
             }
 
             if (keyboardState.IsKeyDown(Keys.Left))
             {
                 ghostSpeed.X -= 2;
-                
+                ghostTexture = ghostLeftTexture;
+
             }
 
 
@@ -158,21 +161,13 @@ namespace final_project_rough_draft__Stardew_
                         ghostLocation.Offset(-ghostSpeed);
 
 
-                if   (livingRoomDoor.Contains(ghostLocation))
+                if (livingRoomDoor.Contains(ghostLocation))
                 {
                     screen = Screen.bedRoom;
-                    //ghostLocation = new Rectangle(380, 476, 70, 70);
-
-
-                }
-                if (mouseState.LeftButton == ButtonState.Pressed && livingRoomDoor.Contains(mouseState.Position))
-                {
-                    screen = Screen.pianoRoom;
-                    ghostLocation = new Rectangle(700, 280, 70, 70);
-
-
+                    ghostLocation = new Rectangle(380, 476, 70, 70);
 
                 }
+                
 
 
 
@@ -181,45 +176,31 @@ namespace final_project_rough_draft__Stardew_
             else if (screen == Screen.pianoRoom)
             {
 
-                ghostEffect = SpriteEffects.FlipHorizontally;
+                
 
-                if (mouseState.RightButton == ButtonState.Pressed && pianoRoomDoor.Contains(mouseState.Position))
-                {
-                    screen = Screen.bedRoom;
-                    
-                    ghostLocation = new Rectangle(380, 476, 70, 70);
-                    
-
-
-                }
-                if (mouseState.LeftButton == ButtonState.Pressed && pianoRoomDoor.Contains(mouseState.Position))
+                if (pianoRoomDoor.Contains(ghostLocation))
                 {
                     screen = Screen.livingRoom;
-                    ghostLocation = new Rectangle(190, 488, 70, 70);
+
+                   ghostLocation = new Rectangle(180, 450, 70, 70);
 
 
 
                 }
+                
             }
             else if (screen == Screen.bedRoom)
             {
 
                 
-                if (mouseState.LeftButton == ButtonState.Pressed && bedRoomDoor.Contains(mouseState.Position))
+                if (bedRoomDoor.Contains(ghostLocation)) 
                 {
                     screen = Screen.pianoRoom;
                     ghostLocation = new Rectangle(700, 280, 70, 70);
 
 
                 }
-                if (mouseState.RightButton == ButtonState.Pressed && bedRoomDoor.Contains(mouseState.Position))
-                {
-                    screen = Screen.livingRoom;
-                    ghostLocation = new Rectangle(190, 488, 70, 70);
-
-
-
-                }
+                
             }
 
 
@@ -247,14 +228,14 @@ namespace final_project_rough_draft__Stardew_
             {
                 
                 _spriteBatch.Draw(livingRoomTexture, window, Color.White);
-                _spriteBatch.Draw(ghostRightTexture, ghostLocation, Color.White);
+                _spriteBatch.Draw(ghostTexture, ghostLocation, Color.White*0.5f);
 
             }
 
             else if (screen == Screen.bedRoom)
             {
                 _spriteBatch.Draw(bedRoomTexture, window, Color.White);
-                _spriteBatch.Draw(ghostRightTexture, ghostLocation, Color.White);
+                _spriteBatch.Draw(ghostTexture, ghostLocation, Color.White*0.5f);
 
             }
             else if (screen == Screen.pianoRoom)
@@ -262,7 +243,7 @@ namespace final_project_rough_draft__Stardew_
 
 
                 _spriteBatch.Draw(pianoRoomTexture, window, Color.White);
-                _spriteBatch.Draw(ghostRightTexture, ghostLocation, Color.White);
+                _spriteBatch.Draw(ghostTexture, ghostLocation, Color.White*0.5f);
 
             }
 
