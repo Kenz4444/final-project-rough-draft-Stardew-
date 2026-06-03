@@ -23,8 +23,8 @@ namespace final_project_rough_draft__Stardew_
         KeyboardState keyboardState;
 
 
-        List<Rectangle> barriers;
-
+        List<Rectangle> barriersLiving;
+        List<Rectangle> barriersBed;
 
         enum Screen
         {
@@ -58,17 +58,23 @@ namespace final_project_rough_draft__Stardew_
             
             ghostLocation = new Rectangle(180, 450, 70, 70);
 
-            barriers = new List<Rectangle>();
-            barriers.Add(new Rectangle(0,0,40,window.Height));
-            barriers.Add(new Rectangle(window.Width-40,0,40,window.Height));
-            barriers.Add(new Rectangle(0, 0, 180, 110));
-            barriers.Add(new Rectangle(0,0,window.Width,175));
-            barriers.Add(new Rectangle(475,270,300,20));
-            barriers.Add(new Rectangle(625, 370,200, window.Height-30));
+            barriersLiving = new List<Rectangle>();
+            barriersLiving.Add(new Rectangle(0,0,40,window.Height));
+            barriersLiving.Add(new Rectangle(window.Width-40,0,40,window.Height));
+            barriersLiving.Add(new Rectangle(0, 0, 180, 110));
+            barriersLiving.Add(new Rectangle(0,0,window.Width,175));
+            barriersLiving.Add(new Rectangle(475,270,300,20));
+            barriersLiving.Add(new Rectangle(625, 370,200, window.Height-30));
 
 
-
-
+            barriersBed = new List<Rectangle>();
+            barriersBed.Add(new Rectangle(545,375,910,1075));
+            barriersBed.Add(new Rectangle(2, 116, 230,105 ));
+            barriersBed.Add(new Rectangle(335, 3, 130, 240));
+            barriersBed.Add(new Rectangle(625, 60, 80, 230));
+            barriersBed.Add(new Rectangle(0, 375, 66, 70));
+            barriersBed.Add(new Rectangle(0, 480, 360, 115));
+            barriersBed.Add(new Rectangle(450, 480, 340, 115));
 
 
 
@@ -156,7 +162,7 @@ namespace final_project_rough_draft__Stardew_
             {
 
 
-                foreach (Rectangle barrier in barriers)
+                foreach (Rectangle barrier in barriersLiving)
                     if (ghostLocation.Intersects(barrier))
                         ghostLocation.Offset(-ghostSpeed);
 
@@ -192,7 +198,11 @@ namespace final_project_rough_draft__Stardew_
             else if (screen == Screen.bedRoom)
             {
 
-                
+                foreach (Rectangle barrier in barriersBed)
+                    if (ghostLocation.Intersects(barrier))
+                        ghostLocation.Offset(-ghostSpeed);
+
+
                 if (bedRoomDoor.Contains(ghostLocation)) 
                 {
                     screen = Screen.pianoRoom;
