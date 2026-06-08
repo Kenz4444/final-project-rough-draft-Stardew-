@@ -11,10 +11,10 @@ namespace final_project_rough_draft__Stardew_
         private SpriteBatch _spriteBatch;
 
 
-        Texture2D livingRoomTexture, bedRoomTexture, pianoRoomTexture, ghostRightTexture, ghostLeftTexture, ghostTexture;
+        Texture2D livingRoomTexture, bedRoomTexture, pianoRoomTexture, ghostRightTexture, ghostLeftTexture, ghostTexture, introTexture, guitarBoyTexture;
 
 
-        Rectangle window, livingRoomDoor, bedRoomDoor, pianoRoomDoor, ghostLocation;
+        Rectangle window, livingRoomDoor, bedRoomDoor, pianoRoomDoor, ghostLocation, underBedRect;
         MouseState mouseState;
 
         SpriteEffects ghostEffect;
@@ -25,7 +25,7 @@ namespace final_project_rough_draft__Stardew_
 
         List<Rectangle> barriersLiving;
         List<Rectangle> barriersBed;
-
+        List<Rectangle> barriersPiano;
         enum Screen
         {
             Intro,
@@ -47,15 +47,15 @@ namespace final_project_rough_draft__Stardew_
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            //ghostEffect = SpriteEffects.FlipHorizontally;
+            
             window = new Rectangle(0, 0, 800, 600);
             ghostSpeed = Vector2.Zero;
 
-            livingRoomDoor = new Rectangle(180, 530, 253, 264);
-            bedRoomDoor = new Rectangle(370, 545, 1065, 909);
+            livingRoomDoor = new Rectangle(146, 526, 152, 105);
+            bedRoomDoor = new Rectangle(292, 548, 222, 105);
             pianoRoomDoor = new Rectangle(740, 245, 461, 440);
             
-            
+            underBedRect = new Rectangle(0, 375, 66, 70);
             ghostLocation = new Rectangle(180, 450, 70, 70);
 
             barriersLiving = new List<Rectangle>();
@@ -65,6 +65,9 @@ namespace final_project_rough_draft__Stardew_
             barriersLiving.Add(new Rectangle(0,0,window.Width,175));
             barriersLiving.Add(new Rectangle(475,270,300,20));
             barriersLiving.Add(new Rectangle(625, 370,200, window.Height-30));
+            barriersLiving.Add(new Rectangle(262, 530, 544, 68));
+            barriersLiving.Add(new Rectangle(164, 523, 5, 11));
+            barriersLiving.Add(new Rectangle(-17, 526, 195, 90));
 
 
             barriersBed = new List<Rectangle>();
@@ -72,17 +75,35 @@ namespace final_project_rough_draft__Stardew_
             barriersBed.Add(new Rectangle(2, 116, 230,105 ));
             barriersBed.Add(new Rectangle(335, 3, 130, 240));
             barriersBed.Add(new Rectangle(625, 60, 80, 230));
-            barriersBed.Add(new Rectangle(0, 375, 66, 70));
-            barriersBed.Add(new Rectangle(0, 480, 360, 115));
-            barriersBed.Add(new Rectangle(450, 480, 340, 115));
+            barriersBed.Add(new Rectangle(0, 375, 66, 70)); //
+            barriersBed.Add(new Rectangle(513, 484, 333, 123));
+            barriersBed.Add(new Rectangle(456, 547, 58, 59));
+            barriersBed.Add(new Rectangle(291, 554, 55, 42));
+            barriersBed.Add(new Rectangle(-11, 482, 304, 120));
+            barriersBed.Add(new Rectangle(3, 4, 805, 111));
+            barriersBed.Add(new Rectangle(703, 114, 100, 129));
+            barriersBed.Add(new Rectangle(-11, 274, 27, 96));
+            barriersBed.Add(new Rectangle(779, 290, 16, 89));
 
+            barriersPiano = new List<Rectangle>();
+            barriersPiano.Add(new Rectangle(372, 441, 274, 112));
+            barriersPiano.Add(new Rectangle(37, 482, 165, 34));
+            barriersPiano.Add(new Rectangle(15, 224, 242, 142));
+            barriersPiano.Add(new Rectangle(250, 97, 4, 2));
+            barriersPiano.Add(new Rectangle(234, 1, 553, 134));
+            barriersPiano.Add(new Rectangle(313, 136, 112, 66));
+            barriersPiano.Add(new Rectangle(762, 405, 36, 202));
+            barriersPiano.Add(new Rectangle(765, 128, 43, 126));
+            barriersPiano.Add(new Rectangle(5, 360, 34, 234));
+            barriersPiano.Add(new Rectangle(36, 571, 729, 40));
+            barriersPiano.Add(new Rectangle(221, 121, 33, 107));
 
 
             _graphics.PreferredBackBufferWidth = window.Width;
             _graphics.PreferredBackBufferHeight = window.Height;
             _graphics.ApplyChanges();
 
-            screen = Screen.livingRoom;
+            screen = Screen.Intro;
 
 
             base.Initialize();
@@ -98,7 +119,8 @@ namespace final_project_rough_draft__Stardew_
             ghostRightTexture = Content.Load<Texture2D>("ghostRight");
             ghostLeftTexture = Content.Load<Texture2D>("ghostLeft");
             ghostTexture = Content.Load<Texture2D>("ghostRight");
-
+            introTexture = Content.Load<Texture2D>("introscreen");
+            guitarBoyTexture = Content.Load<Texture2D>("guitarBoy");
 
             // TODO: use this.Content to load your game content here
         }
@@ -113,6 +135,8 @@ namespace final_project_rough_draft__Stardew_
             keyboardState = Keyboard.GetState();
             mouseState = Mouse.GetState();
             ghostSpeed = new Vector2();
+
+
 
 
             ghostLocation.Y += (int)ghostSpeed.Y;
@@ -152,7 +176,10 @@ namespace final_project_rough_draft__Stardew_
 
             
 
-
+            if (screen == Screen.Intro && keyboardState.IsKeyDown(Keys.Enter))
+            {
+                screen = Screen.livingRoom;
+            }
 
 
 
@@ -173,7 +200,12 @@ namespace final_project_rough_draft__Stardew_
                     ghostLocation = new Rectangle(380, 476, 70, 70);
 
                 }
+
                 
+                if (underBedRect.Contains(mouseState.Position))
+                {
+                    ghostTexture = guitarBoyTexture;
+                }
 
 
 
@@ -182,7 +214,10 @@ namespace final_project_rough_draft__Stardew_
             else if (screen == Screen.pianoRoom)
             {
 
-                
+                foreach (Rectangle barrier in barriersPiano)
+                    if (ghostLocation.Intersects(barrier))
+                        ghostLocation.Offset(-ghostSpeed);
+
 
                 if (pianoRoomDoor.Contains(ghostLocation))
                 {
@@ -210,7 +245,11 @@ namespace final_project_rough_draft__Stardew_
 
 
                 }
-                
+                if (underBedRect.Contains(mouseState.Position))
+                {
+                    ghostTexture = guitarBoyTexture;
+                }
+
             }
 
 
@@ -239,6 +278,11 @@ namespace final_project_rough_draft__Stardew_
                 
                 _spriteBatch.Draw(livingRoomTexture, window, Color.White);
                 _spriteBatch.Draw(ghostTexture, ghostLocation, Color.White*0.5f);
+                if(ghostTexture == guitarBoyTexture)
+                {
+
+                    _spriteBatch.Draw(guitarBoyTexture, ghostLocation, Color.White);
+                }
 
             }
 
@@ -246,7 +290,11 @@ namespace final_project_rough_draft__Stardew_
             {
                 _spriteBatch.Draw(bedRoomTexture, window, Color.White);
                 _spriteBatch.Draw(ghostTexture, ghostLocation, Color.White*0.5f);
+                if (ghostTexture == guitarBoyTexture)
+                {
 
+                    _spriteBatch.Draw(guitarBoyTexture, ghostLocation, Color.White);
+                }
             }
             else if (screen == Screen.pianoRoom)
             {
@@ -255,6 +303,10 @@ namespace final_project_rough_draft__Stardew_
                 _spriteBatch.Draw(pianoRoomTexture, window, Color.White);
                 _spriteBatch.Draw(ghostTexture, ghostLocation, Color.White*0.5f);
 
+            }
+            else if (screen == Screen.Intro)
+            {
+                _spriteBatch.Draw(introTexture, window, Color.White);
             }
 
 
