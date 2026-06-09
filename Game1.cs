@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System.Net.Http;
 
 namespace final_project_rough_draft__Stardew_
 {
@@ -17,7 +18,6 @@ namespace final_project_rough_draft__Stardew_
         Rectangle window, livingRoomDoor, bedRoomDoor, pianoRoomDoor, ghostLocation, underBedRect;
         MouseState mouseState;
 
-        SpriteEffects ghostEffect;
 
         Vector2 ghostSpeed;
         KeyboardState keyboardState;
@@ -35,6 +35,8 @@ namespace final_project_rough_draft__Stardew_
             End
         }
         Screen screen;
+
+        bool alive;
 
 
         public Game1()
@@ -55,7 +57,7 @@ namespace final_project_rough_draft__Stardew_
             bedRoomDoor = new Rectangle(292, 548, 222, 105);
             pianoRoomDoor = new Rectangle(740, 245, 461, 440);
             
-            underBedRect = new Rectangle(0, 375, 66, 70);
+            underBedRect = new Rectangle(339, 134, 135, 116);
             ghostLocation = new Rectangle(180, 450, 70, 70);
 
             barriersLiving = new List<Rectangle>();
@@ -104,6 +106,7 @@ namespace final_project_rough_draft__Stardew_
             _graphics.ApplyChanges();
 
             screen = Screen.Intro;
+            alive = false;
 
 
             base.Initialize();
@@ -173,8 +176,14 @@ namespace final_project_rough_draft__Stardew_
 
             ghostLocation.Offset(ghostSpeed);
 
+            if (alive == true)
+            {
+                ghostTexture = guitarBoyTexture;
+            }
 
             
+
+
 
             if (screen == Screen.Intro && keyboardState.IsKeyDown(Keys.Enter))
             {
@@ -202,10 +211,7 @@ namespace final_project_rough_draft__Stardew_
                 }
 
                 
-                if (underBedRect.Contains(mouseState.Position))
-                {
-                    ghostTexture = guitarBoyTexture;
-                }
+                
 
 
 
@@ -245,10 +251,16 @@ namespace final_project_rough_draft__Stardew_
 
 
                 }
-                if (underBedRect.Contains(mouseState.Position))
+                if (mouseState.LeftButton == ButtonState.Pressed && underBedRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, underBedRect.Width, underBedRect.Height)))
                 {
-                    ghostTexture = guitarBoyTexture;
+                    alive = true;
+
                 }
+
+
+
+
+
 
             }
 
@@ -272,17 +284,21 @@ namespace final_project_rough_draft__Stardew_
 
             _spriteBatch.Begin();
 
-            
+            if (alive== true)
+            {
+                _spriteBatch.Draw(guitarBoyTexture, ghostLocation, Color.White);
+
+            }
+
+
+
+
             if (screen == Screen.livingRoom)
             {
                 
                 _spriteBatch.Draw(livingRoomTexture, window, Color.White);
                 _spriteBatch.Draw(ghostTexture, ghostLocation, Color.White*0.5f);
-                if(ghostTexture == guitarBoyTexture)
-                {
 
-                    _spriteBatch.Draw(guitarBoyTexture, ghostLocation, Color.White);
-                }
 
             }
 
@@ -290,11 +306,7 @@ namespace final_project_rough_draft__Stardew_
             {
                 _spriteBatch.Draw(bedRoomTexture, window, Color.White);
                 _spriteBatch.Draw(ghostTexture, ghostLocation, Color.White*0.5f);
-                if (ghostTexture == guitarBoyTexture)
-                {
-
-                    _spriteBatch.Draw(guitarBoyTexture, ghostLocation, Color.White);
-                }
+                
             }
             else if (screen == Screen.pianoRoom)
             {
