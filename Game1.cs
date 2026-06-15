@@ -15,7 +15,7 @@ namespace final_project_rough_draft__Stardew_
         Texture2D livingRoomTexture, bedRoomTexture, pianoRoomTexture, ghostRightTexture, ghostLeftTexture, ghostTexture, introTexture, guitarBoyTexture, ghostHuntersTexture, hintOneTexture, hintTwoTexture, hintThreeTexture;
 
 
-        Rectangle window, livingRoomDoor, bedRoomDoor, pianoRoomDoor, ghostLocation, underBedRect, tvRect, pianoRect, bookRect, tvScreenRect, presentrect;
+        Rectangle window, livingRoomDoor, bedRoomDoor, pianoRoomDoor, ghostLocation, underBedRect, tvRect, pianoRect, bookRect, tvScreenRect, presentrect, tableRect;
         MouseState mouseState;
 
 
@@ -29,6 +29,8 @@ namespace final_project_rough_draft__Stardew_
         enum Screen
         {
             Intro,
+            instructions,
+            map,
             livingRoom,
             hintOne,
             hintTwo,
@@ -42,7 +44,7 @@ namespace final_project_rough_draft__Stardew_
         bool alive;
         bool tvOn;
 
-        SpriteFont introFont;
+        
 
 
 
@@ -69,6 +71,7 @@ namespace final_project_rough_draft__Stardew_
             tvScreenRect = new Rectangle(68, 175, 94, 49);
             presentrect = new Rectangle(256, 351, 76, 53);
             bookRect = new Rectangle(639, 194, 48, 58);
+            tableRect = new Rectangle(369, 440, 274, 96);
 
 
 
@@ -94,7 +97,7 @@ namespace final_project_rough_draft__Stardew_
             barriersBed.Add(new Rectangle(2, 116, 230,105 ));
             barriersBed.Add(new Rectangle(335, 3, 130, 240));
             barriersBed.Add(new Rectangle(625, 60, 80, 230));
-            barriersBed.Add(new Rectangle(0, 375, 66, 70)); //
+            barriersBed.Add(new Rectangle(0, 375, 66, 70)); 
             barriersBed.Add(new Rectangle(513, 484, 333, 123));
             barriersBed.Add(new Rectangle(456, 547, 58, 59));
             barriersBed.Add(new Rectangle(291, 554, 55, 42));
@@ -140,14 +143,12 @@ namespace final_project_rough_draft__Stardew_
             ghostRightTexture = Content.Load<Texture2D>("ghostRight");
             ghostLeftTexture = Content.Load<Texture2D>("ghostLeft");
             ghostTexture = Content.Load<Texture2D>("ghostRight");
-            introTexture = Content.Load<Texture2D>("introscreen");
+            introTexture = Content.Load<Texture2D>("titleScreen");
             guitarBoyTexture = Content.Load<Texture2D>("guitarBoy");
             ghostHuntersTexture = Content.Load<Texture2D>("ghostHunters");
             hintOneTexture = Content.Load<Texture2D>("betterHintOne");
-            hintTwoTexture = Content.Load<Texture2D>("hintTwoScreen");
-
-
-            introFont = Content.Load<SpriteFont>("introFont");
+            hintTwoTexture = Content.Load<Texture2D>("betterHintTwo");
+            hintThreeTexture = Content.Load<Texture2D>("hintThree");
 
             // TODO: use this.Content to load your game content here
         }
@@ -267,10 +268,13 @@ namespace final_project_rough_draft__Stardew_
 
                    ghostLocation = new Rectangle(180, 450, 70, 70);
 
-
-
                 }
-                
+
+                if (mouseState.LeftButton == ButtonState.Pressed && tableRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, tableRect.Width, tableRect.Height)))
+                {
+                    screen = Screen.hintThree;
+                }
+
             }
             else if (screen == Screen.bedRoom)
             {
@@ -308,7 +312,10 @@ namespace final_project_rough_draft__Stardew_
             {
                 screen = Screen.livingRoom;
             }
-
+            else if (screen == Screen.hintThree && mouseState.RightButton == ButtonState.Pressed)
+            {
+                screen = Screen.pianoRoom;
+            }
 
 
 
@@ -389,7 +396,7 @@ namespace final_project_rough_draft__Stardew_
             else if (screen == Screen.Intro)
             {
                 _spriteBatch.Draw(introTexture, window, Color.White);
-                _spriteBatch.DrawString(introFont, "The Afterlife Detective", new Vector2(200, 120), Color.Black);
+                
 
             }
             else if (screen == Screen.hintOne)
@@ -401,7 +408,10 @@ namespace final_project_rough_draft__Stardew_
             {
                 _spriteBatch.Draw(hintTwoTexture, window, Color.White);
             }
-            
+            else if (screen == Screen.hintThree)
+            {
+                _spriteBatch.Draw(hintThreeTexture, window, Color.White);
+            }
 
 
 
