@@ -12,10 +12,10 @@ namespace final_project_rough_draft__Stardew_
         private SpriteBatch _spriteBatch;
 
 
-        Texture2D livingRoomTexture, bedRoomTexture, pianoRoomTexture, ghostRightTexture, ghostLeftTexture, ghostTexture, introTexture, guitarBoyTexture, ghostHuntersTexture, hintOneTexture, hintTwoTexture, hintThreeTexture;
+        Texture2D livingRoomTexture, bedRoomTexture, pianoRoomTexture, ghostRightTexture, ghostLeftTexture, ghostTexture, introTexture, guitarBoyTexture, ghostHuntersTexture, hintOneTexture, hintTwoTexture, hintThreeTexture, mapTexture, instructionsTexture;
 
 
-        Rectangle window, livingRoomDoor, bedRoomDoor, pianoRoomDoor, ghostLocation, underBedRect, tvRect, pianoRect, bookRect, tvScreenRect, presentrect, tableRect;
+        Rectangle window, livingRoomDoor, bedRoomDoor, pianoRoomDoor, ghostLocation, underBedRect, tvRect, pianoRect, bookRect, tvScreenRect, presentrect, tableRect, yesRect, noRect;
         MouseState mouseState;
 
 
@@ -43,6 +43,8 @@ namespace final_project_rough_draft__Stardew_
 
         bool alive;
         bool tvOn;
+
+        Vector2 cursorPosition;
 
         
 
@@ -72,6 +74,8 @@ namespace final_project_rough_draft__Stardew_
             presentrect = new Rectangle(256, 351, 76, 53);
             bookRect = new Rectangle(639, 194, 48, 58);
             tableRect = new Rectangle(369, 440, 274, 96);
+            yesRect = new Rectangle(203, 485, 156, 84);
+            noRect = new Rectangle(409, 482, 168, 90);
 
 
 
@@ -149,6 +153,8 @@ namespace final_project_rough_draft__Stardew_
             hintOneTexture = Content.Load<Texture2D>("betterHintOne");
             hintTwoTexture = Content.Load<Texture2D>("betterHintTwo");
             hintThreeTexture = Content.Load<Texture2D>("hintThree");
+            mapTexture = Content.Load<Texture2D>("map2");
+            instructionsTexture = Content.Load<Texture2D>("instructions");
 
             // TODO: use this.Content to load your game content here
         }
@@ -163,6 +169,8 @@ namespace final_project_rough_draft__Stardew_
             keyboardState = Keyboard.GetState();
             mouseState = Mouse.GetState();
             ghostSpeed = new Vector2();
+            cursorPosition = new Vector2(mouseState.X, mouseState.Y);
+
 
 
 
@@ -213,7 +221,7 @@ namespace final_project_rough_draft__Stardew_
 
             if (screen == Screen.Intro && keyboardState.IsKeyDown(Keys.Enter))
             {
-                screen = Screen.livingRoom;
+                screen = Screen.instructions;
             }
 
 
@@ -235,15 +243,15 @@ namespace final_project_rough_draft__Stardew_
                     ghostLocation = new Rectangle(380, 476, 70, 70);
 
                 }
-                if (mouseState.LeftButton == ButtonState.Pressed && tvRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, tvRect.Width, tvRect.Height)))
+                if (mouseState.LeftButton == ButtonState.Pressed && tvRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, tvRect.Width, tvRect.Height)) && ghostLocation.Intersects(new Rectangle(44, 142, 171, 133)))
                 {
                     tvOn = true;
                 }
-                if (mouseState.RightButton == ButtonState.Pressed && tvRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, tvRect.Width, tvRect.Height)))
+                if (mouseState.RightButton == ButtonState.Pressed && tvRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, tvRect.Width, tvRect.Height)) && ghostLocation.Intersects(new Rectangle(44, 142, 171, 133)))
                 {
                     tvOn = false;
                 }
-                if (mouseState.LeftButton == ButtonState.Pressed && presentrect.Intersects(new Rectangle(mouseState.X, mouseState.Y, presentrect.Width, presentrect.Height)))
+                if (mouseState.LeftButton == ButtonState.Pressed && presentrect.Intersects(new Rectangle(mouseState.X, mouseState.Y, presentrect.Width, presentrect.Height)) && ghostLocation.Intersects(new Rectangle(248, 342, 102, 88)))
                 {
                     screen = Screen.hintOne;
                 }
@@ -270,7 +278,7 @@ namespace final_project_rough_draft__Stardew_
 
                 }
 
-                if (mouseState.LeftButton == ButtonState.Pressed && tableRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, tableRect.Width, tableRect.Height)))
+                if (mouseState.LeftButton == ButtonState.Pressed && tableRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, tableRect.Width, tableRect.Height)) && ghostLocation.Intersects(new Rectangle(338, 403, 361, 174)))
                 {
                     screen = Screen.hintThree;
                 }
@@ -291,12 +299,12 @@ namespace final_project_rough_draft__Stardew_
 
 
                 }
-                if (mouseState.LeftButton == ButtonState.Pressed && underBedRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, underBedRect.Width, underBedRect.Height)))
+                if (mouseState.LeftButton == ButtonState.Pressed && underBedRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, underBedRect.Width, underBedRect.Height)) && ghostLocation.Intersects(new Rectangle(277, 96, 259, 240)))
                 {
                     alive = true;
 
                 }
-                if (mouseState.LeftButton == ButtonState.Pressed && bookRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, bookRect.Width, bookRect.Height)))
+                if (mouseState.LeftButton == ButtonState.Pressed && bookRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, bookRect.Width, bookRect.Height)) && ghostLocation.Intersects(new Rectangle(538, 151, 164, 189)))
                 {
                     screen = Screen.hintTwo;
                 }
@@ -316,6 +324,20 @@ namespace final_project_rough_draft__Stardew_
             {
                 screen = Screen.pianoRoom;
             }
+            else if (screen == Screen.instructions && mouseState.LeftButton == ButtonState.Pressed && yesRect.Contains(mouseState. Position))
+            {
+                screen = Screen.map;
+                
+            }
+            else if (screen == Screen.instructions && mouseState.LeftButton == ButtonState.Pressed && noRect.Contains(mouseState.Position))
+            {
+                Exit();
+            }
+
+            else if (screen == Screen.map && (keyboardState.IsKeyDown(Keys.Enter)))
+            {
+                screen = Screen.livingRoom;
+            }
 
 
 
@@ -323,9 +345,10 @@ namespace final_project_rough_draft__Stardew_
 
 
 
-            // TODO: Add your update logic here
 
-            base.Update(gameTime);
+                // TODO: Add your update logic here
+
+                base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -412,10 +435,17 @@ namespace final_project_rough_draft__Stardew_
             {
                 _spriteBatch.Draw(hintThreeTexture, window, Color.White);
             }
+            else if (screen ==Screen.instructions)
+            {
+                _spriteBatch.Draw(instructionsTexture, window, Color.White);
+            }
+            else if (screen == Screen.map)
+            {
+                _spriteBatch.Draw(mapTexture, window, Color.White);
+            }
 
 
-
-            _spriteBatch.End();
+                _spriteBatch.End();
 
             base.Draw(gameTime);
         }
