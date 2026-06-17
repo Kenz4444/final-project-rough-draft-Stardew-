@@ -12,10 +12,10 @@ namespace final_project_rough_draft__Stardew_
         private SpriteBatch _spriteBatch;
 
 
-        Texture2D livingRoomTexture, bedRoomTexture, pianoRoomTexture, ghostRightTexture, ghostLeftTexture, ghostTexture, introTexture, guitarBoyTexture, ghostHuntersTexture, hintOneTexture, hintTwoTexture, hintThreeTexture, mapTexture, instructionsTexture;
+        Texture2D livingRoomTexture, bedRoomTexture, pianoRoomTexture, ghostRightTexture, ghostLeftTexture, ghostTexture, introTexture, guitarBoyTexture, ghostHuntersTexture, hintOneTexture, hintTwoTexture, hintThreeTexture, mapTexture, instructionsTexture, firstClueTexture, endTexture;
 
 
-        Rectangle window, livingRoomDoor, bedRoomDoor, pianoRoomDoor, ghostLocation, underBedRect, tvRect, pianoRect, bookRect, tvScreenRect, presentrect, tableRect, yesRect, noRect;
+        Rectangle window, livingRoomDoor, bedRoomDoor, pianoRoomDoor, ghostLocation, underBedRect, tvRect, pianoRect, bookRect, tvScreenRect, presentrect, tableRect, yesRect, noRect, startRect, endRect;
         MouseState mouseState;
 
 
@@ -31,6 +31,7 @@ namespace final_project_rough_draft__Stardew_
             Intro,
             instructions,
             map,
+            clueOne,
             livingRoom,
             hintOne,
             hintTwo,
@@ -45,8 +46,9 @@ namespace final_project_rough_draft__Stardew_
         bool tvOn;
 
         Vector2 cursorPosition;
-
         
+
+
 
 
 
@@ -76,6 +78,9 @@ namespace final_project_rough_draft__Stardew_
             tableRect = new Rectangle(369, 440, 274, 96);
             yesRect = new Rectangle(203, 485, 156, 84);
             noRect = new Rectangle(409, 482, 168, 90);
+
+            startRect = new Rectangle(596, 541, 195, 51);
+            endRect = new Rectangle(613, 520, 162, 70);
 
 
 
@@ -155,6 +160,8 @@ namespace final_project_rough_draft__Stardew_
             hintThreeTexture = Content.Load<Texture2D>("hintThree");
             mapTexture = Content.Load<Texture2D>("map2");
             instructionsTexture = Content.Load<Texture2D>("instructions");
+            firstClueTexture = Content.Load<Texture2D>("FirstClue");
+            endTexture = Content.Load<Texture2D>("exit screen");
 
             // TODO: use this.Content to load your game content here
         }
@@ -212,10 +219,13 @@ namespace final_project_rough_draft__Stardew_
             if (alive == true)
             {
                 ghostTexture = guitarBoyTexture;
+                screen = Screen.End;
             }
-            
 
             
+
+
+
 
 
 
@@ -255,7 +265,7 @@ namespace final_project_rough_draft__Stardew_
                 {
                     screen = Screen.hintOne;
                 }
-                
+
 
 
 
@@ -274,7 +284,7 @@ namespace final_project_rough_draft__Stardew_
                 {
                     screen = Screen.livingRoom;
 
-                   ghostLocation = new Rectangle(180, 450, 70, 70);
+                    ghostLocation = new Rectangle(180, 450, 70, 70);
 
                 }
 
@@ -292,7 +302,7 @@ namespace final_project_rough_draft__Stardew_
                         ghostLocation.Offset(-ghostSpeed);
 
 
-                if (bedRoomDoor.Contains(ghostLocation)) 
+                if (bedRoomDoor.Contains(ghostLocation))
                 {
                     screen = Screen.pianoRoom;
                     ghostLocation = new Rectangle(700, 280, 70, 70);
@@ -308,9 +318,10 @@ namespace final_project_rough_draft__Stardew_
                 {
                     screen = Screen.hintTwo;
                 }
-               
 
             }
+
+
             else if (screen == Screen.hintTwo && mouseState.RightButton == ButtonState.Pressed)
             {
                 screen = Screen.bedRoom;
@@ -324,23 +335,28 @@ namespace final_project_rough_draft__Stardew_
             {
                 screen = Screen.pianoRoom;
             }
-            else if (screen == Screen.instructions && mouseState.LeftButton == ButtonState.Pressed && yesRect.Contains(mouseState. Position))
+
+
+            else if (screen == Screen.map && (keyboardState.IsKeyDown(Keys.Enter)))
+            {
+                screen = Screen.clueOne;
+            }
+            else if (screen == Screen.clueOne && mouseState.LeftButton == ButtonState.Pressed && startRect.Contains(mouseState.Position))
+            {
+                screen = Screen.livingRoom;
+            }
+            else if (screen == Screen.instructions && mouseState.LeftButton == ButtonState.Pressed && yesRect.Contains(mouseState.Position))
             {
                 screen = Screen.map;
-                
             }
             else if (screen == Screen.instructions && mouseState.LeftButton == ButtonState.Pressed && noRect.Contains(mouseState.Position))
             {
                 Exit();
             }
-
-            else if (screen == Screen.map && (keyboardState.IsKeyDown(Keys.Enter)))
+            else if (screen ==Screen.End && mouseState.LeftButton == ButtonState.Pressed && endRect.Contains(mouseState.Position))
             {
-                screen = Screen.livingRoom;
+                Exit();
             }
-
-
-
 
 
 
@@ -349,7 +365,8 @@ namespace final_project_rough_draft__Stardew_
                 // TODO: Add your update logic here
 
                 base.Update(gameTime);
-        }
+         }
+        
 
         protected override void Draw(GameTime gameTime)
         {
@@ -442,6 +459,14 @@ namespace final_project_rough_draft__Stardew_
             else if (screen == Screen.map)
             {
                 _spriteBatch.Draw(mapTexture, window, Color.White);
+            }
+            else if (screen ==Screen.clueOne)
+            {
+                _spriteBatch.Draw(firstClueTexture, window, Color.White);
+            }
+            else if (screen == Screen.End)
+            {
+                _spriteBatch.Draw(endTexture, window, Color.White);
             }
 
 
