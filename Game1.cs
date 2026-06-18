@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
@@ -46,7 +47,10 @@ namespace final_project_rough_draft__Stardew_
         bool tvOn;
 
         Vector2 cursorPosition;
-        
+        SoundEffect piano, guitar;
+        SoundEffectInstance pianoInstance;
+        bool endGame;
+        float timer;
 
 
 
@@ -81,6 +85,7 @@ namespace final_project_rough_draft__Stardew_
 
             startRect = new Rectangle(596, 541, 195, 51);
             endRect = new Rectangle(613, 520, 162, 70);
+            pianoRect = new Rectangle(490, 85, 209, 165);
 
 
 
@@ -137,6 +142,8 @@ namespace final_project_rough_draft__Stardew_
             screen = Screen.Intro;
             alive = false;
             tvOn = false;
+            endGame= false;
+            timer = 0f;
 
 
             base.Initialize();
@@ -162,6 +169,9 @@ namespace final_project_rough_draft__Stardew_
             instructionsTexture = Content.Load<Texture2D>("instructions");
             firstClueTexture = Content.Load<Texture2D>("FirstClue");
             endTexture = Content.Load<Texture2D>("exit screen");
+
+            piano = Content.Load<SoundEffect>("pianoSound");
+            pianoInstance = piano.CreateInstance();
 
             // TODO: use this.Content to load your game content here
         }
@@ -219,20 +229,21 @@ namespace final_project_rough_draft__Stardew_
             if (alive == true)
             {
                 ghostTexture = guitarBoyTexture;
-                screen = Screen.End;
+               
             }
-
-            
-
-
-
-
-
-
-            if (screen == Screen.Intro && keyboardState.IsKeyDown(Keys.Enter))
+            if (endGame)
             {
-                screen = Screen.instructions;
+                timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (timer > 3)
+                {
+                    screen = Screen.End;
+                }
+
             }
+
+
+
+
 
 
 
@@ -293,6 +304,15 @@ namespace final_project_rough_draft__Stardew_
                     screen = Screen.hintThree;
                 }
 
+                if (mouseState.LeftButton == ButtonState.Pressed && pianoRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, pianoRect.Width, pianoRect.Height)) && ghostLocation.Intersects(new Rectangle(490, 85, 209, 165)))
+                {
+                    pianoInstance.Play();
+                }
+                else if (mouseState.RightButton == ButtonState.Pressed && pianoRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, pianoRect.Width, pianoRect.Height)) && ghostLocation.Intersects(new Rectangle(490, 85, 209, 165)))
+                {
+                    pianoInstance.Stop();
+                }
+
             }
             else if (screen == Screen.bedRoom)
             {
@@ -300,6 +320,8 @@ namespace final_project_rough_draft__Stardew_
                 foreach (Rectangle barrier in barriersBed)
                     if (ghostLocation.Intersects(barrier))
                         ghostLocation.Offset(-ghostSpeed);
+
+                
 
 
                 if (bedRoomDoor.Contains(ghostLocation))
@@ -311,7 +333,9 @@ namespace final_project_rough_draft__Stardew_
                 }
                 if (mouseState.LeftButton == ButtonState.Pressed && underBedRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, underBedRect.Width, underBedRect.Height)) && ghostLocation.Intersects(new Rectangle(277, 96, 259, 240)))
                 {
+                    endGame = true;
                     alive = true;
+                    
 
                 }
                 if (mouseState.LeftButton == ButtonState.Pressed && bookRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, bookRect.Width, bookRect.Height)) && ghostLocation.Intersects(new Rectangle(538, 151, 164, 189)))
@@ -356,6 +380,10 @@ namespace final_project_rough_draft__Stardew_
             else if (screen ==Screen.End && mouseState.LeftButton == ButtonState.Pressed && endRect.Contains(mouseState.Position))
             {
                 Exit();
+            }
+            else if (screen == Screen.Intro && (keyboardState.IsKeyDown(Keys.Enter)))
+            {
+                screen = Screen.instructions;
             }
 
 

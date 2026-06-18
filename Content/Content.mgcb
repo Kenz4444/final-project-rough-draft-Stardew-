@@ -121,6 +121,12 @@
 /processorParam:TextureFormat=Color
 /build:guitarBoy.png
 
+#begin guitarSound.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:guitarSound.mp3
+
 #begin hintThree.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -180,6 +186,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:pianoRoom2.png
+
+#begin pianoSound.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:pianoSound.mp3
 
 #begin titleScreen.png
 /importer:TextureImporter
