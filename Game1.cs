@@ -16,7 +16,7 @@ namespace final_project_rough_draft__Stardew_
         Texture2D livingRoomTexture, bedRoomTexture, pianoRoomTexture, ghostRightTexture, ghostLeftTexture, ghostTexture, introTexture, guitarBoyTexture, ghostHuntersTexture, hintOneTexture, hintTwoTexture, hintThreeTexture, mapTexture, instructionsTexture, firstClueTexture, endTexture;
 
 
-        Rectangle window, livingRoomDoor, bedRoomDoor, pianoRoomDoor, ghostLocation, underBedRect, tvRect, pianoRect, bookRect, tvScreenRect, presentrect, tableRect, yesRect, noRect, startRect, endRect;
+        Rectangle window, livingRoomDoor, bedRoomDoor, pianoRoomDoor, ghostLocation, underBedRect, tvRect, pianoRect, bookRect, tvScreenRect, presentrect, tableRect, yesRect, noRect, startRect, endRect, guitarRect, recordRect;
         MouseState mouseState;
 
 
@@ -47,8 +47,8 @@ namespace final_project_rough_draft__Stardew_
         bool tvOn;
 
         Vector2 cursorPosition;
-        SoundEffect piano, guitar;
-        SoundEffectInstance pianoInstance;
+        SoundEffect piano, guitar, record, intro, ending;
+        SoundEffectInstance pianoInstance, guitarInstance, recordInstance, introInstance, endInstance;
         bool endGame;
         float timer;
 
@@ -86,6 +86,8 @@ namespace final_project_rough_draft__Stardew_
             startRect = new Rectangle(596, 541, 195, 51);
             endRect = new Rectangle(613, 520, 162, 70);
             pianoRect = new Rectangle(490, 85, 209, 165);
+            guitarRect = new Rectangle(708, 196, 101, 95);
+            recordRect = new Rectangle(-2, 377, 75, 106);
 
 
 
@@ -140,6 +142,7 @@ namespace final_project_rough_draft__Stardew_
             _graphics.ApplyChanges();
 
             screen = Screen.Intro;
+            
             alive = false;
             tvOn = false;
             endGame= false;
@@ -172,6 +175,19 @@ namespace final_project_rough_draft__Stardew_
 
             piano = Content.Load<SoundEffect>("pianoSound");
             pianoInstance = piano.CreateInstance();
+
+            guitar = Content.Load<SoundEffect>("guitarSound");
+            guitarInstance = guitar.CreateInstance();
+
+            record = Content.Load<SoundEffect>("recordSound");
+            recordInstance = record.CreateInstance();
+
+            intro = Content.Load<SoundEffect>("introSound");
+            introInstance = intro.CreateInstance();
+
+            ending = Content.Load<SoundEffect>("endSound");
+            endInstance = ending.CreateInstance();
+
 
             // TODO: use this.Content to load your game content here
         }
@@ -241,6 +257,9 @@ namespace final_project_rough_draft__Stardew_
 
             }
 
+            introInstance.Play();
+
+
 
 
 
@@ -252,7 +271,7 @@ namespace final_project_rough_draft__Stardew_
             if (screen == Screen.livingRoom)
             {
 
-
+                
                 foreach (Rectangle barrier in barriersLiving)
                     if (ghostLocation.Intersects(barrier))
                         ghostLocation.Offset(-ghostSpeed);
@@ -285,7 +304,7 @@ namespace final_project_rough_draft__Stardew_
 
             else if (screen == Screen.pianoRoom)
             {
-
+                
                 foreach (Rectangle barrier in barriersPiano)
                     if (ghostLocation.Intersects(barrier))
                         ghostLocation.Offset(-ghostSpeed);
@@ -316,7 +335,7 @@ namespace final_project_rough_draft__Stardew_
             }
             else if (screen == Screen.bedRoom)
             {
-
+                
                 foreach (Rectangle barrier in barriersBed)
                     if (ghostLocation.Intersects(barrier))
                         ghostLocation.Offset(-ghostSpeed);
@@ -333,15 +352,42 @@ namespace final_project_rough_draft__Stardew_
                 }
                 if (mouseState.LeftButton == ButtonState.Pressed && underBedRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, underBedRect.Width, underBedRect.Height)) && ghostLocation.Intersects(new Rectangle(277, 96, 259, 240)))
                 {
+
+                    introInstance.Stop();
                     endGame = true;
                     alive = true;
                     
+                    
+                    
+
 
                 }
                 if (mouseState.LeftButton == ButtonState.Pressed && bookRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, bookRect.Width, bookRect.Height)) && ghostLocation.Intersects(new Rectangle(538, 151, 164, 189)))
                 {
                     screen = Screen.hintTwo;
                 }
+
+                if (mouseState.LeftButton == ButtonState.Pressed && guitarRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, guitarRect.Width, guitarRect.Height)) && ghostLocation.Intersects(new Rectangle(627, 296, 174, 125)))
+                {
+                    guitarInstance.Play();
+                }
+                else if (mouseState.RightButton == ButtonState.Pressed && guitarRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, guitarRect.Width, guitarRect.Height)) && ghostLocation.Intersects(new Rectangle(627, 296, 174, 125)))
+                {
+                    guitarInstance.Stop();
+                }
+
+
+                if (mouseState.LeftButton == ButtonState.Pressed && recordRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, recordRect.Width, recordRect.Height)) && ghostLocation.Intersects(new Rectangle(-1, 350, 194, 131)))
+                {
+                    recordInstance.Play();
+                }
+                else if (mouseState.RightButton == ButtonState.Pressed && recordRect.Intersects(new Rectangle(mouseState.X, mouseState.Y, recordRect.Width, recordRect.Height)) && ghostLocation.Intersects(new Rectangle(-1, 350, 194, 131)))
+                {
+                    recordInstance.Stop();
+                }
+
+
+
 
             }
 
@@ -354,6 +400,7 @@ namespace final_project_rough_draft__Stardew_
             else if (screen == Screen.hintOne && mouseState.RightButton == ButtonState.Pressed)
             {
                 screen = Screen.livingRoom;
+                
             }
             else if (screen == Screen.hintThree && mouseState.RightButton == ButtonState.Pressed)
             {
@@ -364,6 +411,7 @@ namespace final_project_rough_draft__Stardew_
             else if (screen == Screen.map && (keyboardState.IsKeyDown(Keys.Enter)))
             {
                 screen = Screen.clueOne;
+                
             }
             else if (screen == Screen.clueOne && mouseState.LeftButton == ButtonState.Pressed && startRect.Contains(mouseState.Position))
             {
@@ -383,8 +431,16 @@ namespace final_project_rough_draft__Stardew_
             }
             else if (screen == Screen.Intro && (keyboardState.IsKeyDown(Keys.Enter)))
             {
+                
                 screen = Screen.instructions;
+                
             }
+            else if (screen == Screen.End)
+            {
+                introInstance.Stop();
+                endInstance.Play();
+            }
+            
 
 
 
